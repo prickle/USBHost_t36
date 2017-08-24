@@ -8,3 +8,6 @@ getModifiers	KEYWORD2
 getOemKey	KEYWORD2
 attachPress	KEYWORD2
 attachRelease	KEYWORD2
+attachPressAny	KEYWORD2
+attachReleaseAny	KEYWORD2
+rawOnly	KEYWORD2

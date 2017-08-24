@@ -484,8 +484,11 @@ public:
 	uint16_t getKey() { return keyCode; }
 	uint8_t  getModifiers() { return modifiers; }
 	uint8_t  getOemKey() { return keyOEM; }
+	void     rawOnly(bool raw) { onlyRaw = raw; }
 	void     attachPress(void (*f)(int unicode)) { keyPressedFunction = f; }
 	void     attachRelease(void (*f)(int unicode)) { keyReleasedFunction = f; }
+	void     attachPressAny(void (*f)(void)) { keyPressedAnyFunction = f; }
+	void     attachReleaseAny(void (*f)(void)) { keyReleasedAnyFunction = f; }
 protected:
 	virtual bool claim(Device_t *device, int type, const uint8_t *descriptors, uint32_t len);
 	virtual void control(const Transfer_t *transfer);
@@ -500,12 +503,15 @@ private:
 	void key_release(uint32_t mod, uint32_t key);
 	void (*keyPressedFunction)(int unicode);
 	void (*keyReleasedFunction)(int unicode);
+	void (*keyPressedAnyFunction)(void);
+	void (*keyReleasedAnyFunction)(void);
 	Pipe_t *datapipe;
 	setup_t setup;
 	uint8_t report[8];
 	uint16_t keyCode;
 	uint8_t modifiers;
 	uint8_t keyOEM;
+	bool onlyRaw;
 	uint8_t prev_report[8];
 	Pipe_t mypipes[2] __attribute__ ((aligned(32)));
 	Transfer_t mytransfers[4] __attribute__ ((aligned(32)));

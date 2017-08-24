@@ -115,6 +115,8 @@ void KeyboardController::new_data(const Transfer_t *transfer)
 			key_release(prev_report[0], key);
 		}
 	}
+	if (keyReleasedAnyFunction && prev_report[0] > report[0]) key_release(prev_report[0] ^ report[0], 0);
+	if (keyPressedAnyFunction && prev_report[0] < report[0]) key_press(prev_report[0] ^ report[0], 0);
 	for (int i=2; i < 8; i++) {
 		uint32_t key = report[i];
 		if (key >= 4 && !contains(key, prev_report)) {
@@ -131,6 +133,10 @@ void KeyboardController::key_press(uint32_t mod, uint32_t key)
 	println("  press, key=", key);
 	modifiers = mod;
 	keyOEM = key;
+	if (keyPressedAnyFunction) {
+		keyPressedAnyFunction();
+	}
+	if (onlyRaw) return;
 	keyCode = convert_to_unicode(mod, key);
 	println("  unicode = ", keyCode);
 	if (keyPressedFunction) {
@@ -146,6 +152,10 @@ void KeyboardController::key_release(uint32_t mod, uint32_t key)
 	println("  release, key=", key);
 	modifiers = mod;
 	keyOEM = key;
+	if (keyReleasedAnyFunction) {
+		keyReleasedAnyFunction();
+	}
+	if (onlyRaw) return;
 	keyCode = convert_to_unicode(mod, key);
 	if (keyReleasedFunction) {
 		keyReleasedFunction(keyCode);
